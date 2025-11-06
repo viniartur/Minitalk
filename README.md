@@ -12,7 +12,7 @@ Reconstrói a mensagem bit a bit
 
 Imprime a mensagem quando recebe tudo
 
-📱 Cliente (./client)
+Cliente (./client)
 Precisa do PID do servidor e da mensagem
 
 Envia a mensagem convertendo cada caractere em bits
@@ -33,7 +33,7 @@ Cliente envia: 0 1 0 0 0 0 0 1
 Sinais:       USR2 USR1 USR1 USR1 USR1 USR1 USR2 USR1
 8 sinais = 1 caractere
 
-⚡ Regras Importantes
+Regras Importantes
 Só pode usar SIGUSR1 e SIGUSR2
 Sem vazamentos de memória
 Rápido: 100 caracteres em < 1 segundo
