@@ -1,47 +1,60 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: vvieira <vvieira@student.42sp.org.br>      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/11/20 20:09:36 by vvieira           #+#    #+#              #
+#    Updated: 2025/11/20 20:09:37 by vvieira          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
-# Nomes dos executáveis
-CLIENT = client
-SERVER = server
+RESET  = \033[0m
+GREEN  = \033[1;32m
+YELLOW = \033[1;33m
+RED    = \033[1;31m
 
-# Compilador e flags
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
-INCLUDES = -I includes
+NAME    = minitalk
+SERVER  = server
+CLIENT  = client
+CC      = cc
+CFLAGS  = -Wall -Wextra -Werror
+RM      = rm -f
 
-# Arquivos fonte
-CLIENT_SRC = client.c
-SERVER_SRC = server.c
-UTILS_SRC = utils.c
+LIBFT   = ./libft/libft.a
+FTPRINTF = ./ft_printf/libftprintf.a
 
-# Arquivos objeto
-CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
-SERVER_OBJ = $(SERVER_SRC:.c=.o)
-UTILS_OBJ = $(UTILS_SRC:.c=.o)
+all: $(LIBFT) $(FTPRINTF) $(SERVER) $(CLIENT)
 
-# Regra principal
-all: $(SERVER) $(CLIENT)
+$(LIBFT):
+	@$(MAKE) -s -C ./libft
+	@echo "$(GREEN) Libft$(RESET)"
+	
+$(FTPRINTF):
+	@$(MAKE) -s -C ./ft_printf
+	@echo "$(GREEN) Ft_printf$(RESET)"
+	
+$(SERVER): server.c minitalk.h
+	@$(CC) $(CFLAGS) -o $(SERVER) server.c $(LIBFT) $(FTPRINTF)
+	@echo "$(GREEN) Server$(RESET)"
 
-# Compilar servidor
-$(SERVER): $(SERVER_OBJ) $(UTILS_OBJ)
-	$(CC) $(CFLAGS) $(SERVER_OBJ) $(UTILS_OBJ) -o $(SERVER)
-
-# Compilar cliente
-$(CLIENT): $(CLIENT_OBJ) $(UTILS_OBJ)
-	$(CC) $(CFLAGS) $(CLIENT_OBJ) $(UTILS_OBJ) -o $(CLIENT)
-
-# Compilar objetos
-%.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-# Limpar objetos
+$(CLIENT): client.c minitalk.h
+	@$(CC) $(CFLAGS) -o $(CLIENT) client.c $(LIBFT) $(FTPRINTF)
+	@echo "$(GREEN) Client$(RESET)"
+	@echo "$(GREEN)Compiled successfully!$(RESET)"    
+	
 clean:
-	rm -f $(CLIENT_OBJ) $(SERVER_OBJ) $(UTILS_OBJ)
+	@$(RM) $(SERVER) $(CLIENT)
+	@$(MAKE) clean -s -C ./libft
+	@$(MAKE) clean -s -C ./ft_printf
+	@echo "$(RED) Objects$(RESET)"
 
-# Limpar tudo
 fclean: clean
-	rm -f $(CLIENT) $(SERVER)
-
-# Recompilar
+	@$(MAKE) fclean -s -C ./libft
+	@$(MAKE) fclean -s -C ./ft_printf
+	@echo "$(RED) Executables!$(RESET)"
+	@echo "$(RED)Removed!$(RESET)"
 re: fclean all
 
 .PHONY: all clean fclean re
